@@ -1,0 +1,231 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Climate Conversations</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="icon" type="image/x-icon" href="{% static 'images/img/favicon.ico' %}" />
+<script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+<style>
+.box{
+  box-model: border-box;
+  border: 3px solid transparent;
+  background-clip:padding-box;
+}
+
+.widgets {
+    display: flex;
+    justify-content: space-around;
+}
+
+.nogap > .col{ padding-left:7.5px; padding-right: 7.5px}
+.nogap > .col:first-child{ padding-left: 15px; }
+.nogap > .col:last-child{ padding-right: 15px; }
+
+.cssBox {
+  flex-basis: calc(50% - 20px);
+}
+
+.rcorners1 {
+  border-radius: 25px;
+  background: #73AD21;
+  padding: 20px;
+  width: 200px;
+  height: 150px;
+}
+
+
+
+.main {
+  padding: 0px 10px;
+  margin-top: 80px;
+}
+
+
+.circle {
+  position: relative;
+  width: 100%;
+  height: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid gray;
+}
+
+.circle img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.follow {
+  background-color:#D98880; /* Green */
+  border: none;
+  color:white  ;
+  padding:10px;
+  font-size: 16px;
+  cursor: pointer;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+}
+
+.topic-head {
+  color:#2471A3 ;
+}
+.content-font {
+  font-size:15px;
+}
+
+.follow:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.comment_data {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #f1f1f1;
+}
+#chartdiv1 {
+  width: 100%;
+  height: 500px;
+}
+</style>
+
+
+
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom" >
+    <a class="navbar-brand" href="/" style="  letter-spacing:5px;">Climate Conversations and Visualizations</a>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto my-2 my-lg-0">
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/home?userid={{allusers.email}}">Home</a></li>
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/post?userid={{allusers.email}}">Post</a></li>
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/timeline?userid={{allusers.email}}">Timeline</a></li>
+            <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/logout">Logout</a></li>
+        </ul>
+    </div>
+  </nav>
+
+<div class="main">
+
+      {% if alldata %}
+      {% for data in alldata %}
+      <div class="card boder shadow-lg p-3 mb-2 bg-white"  style="margin-bottom:10px">
+        <div class="card-header ">
+            <div class="row">
+          <div class="circle border-info " style="border: 1.5px solid;height:50px;width:50px;">
+            <br/><img src="{% static 'images/img/avatar.png' %}" ></img>
+
+        </div>
+        <div class="row-fluid">
+
+          <div class="span2" style="padding-left:10px"><strong><a href="" style="color:#154360;text-decoration: none;">{{ data.0}}</a></strong></div>
+          <div class="span2" style="padding-left:10px"><font size="2px"><a href="" style="color:#5D6D7E;text-decoration: none;">{{data.5}}</a></font></div>
+      </div>
+
+        </div>
+        </div>
+        <div class="card-body ">
+          <strong><p >{{ data.2 }}</p></strong>
+          <p >{{ data.3 }}</p>
+          {% if data.1 %}
+          <br/><img src="data:image/png;base64,{{ data.1 }}" width="100%" height="75%">
+          {% endif %}
+        </div>
+        <div class="card-footer form-group" style="font-size:13px;color:#5D6D7E;">
+
+        <!-- comment list here -->
+
+          {% if data.6 %}
+              {% if data.6|length > 5 %}
+                  {% for one in  data.6 %}
+                    {% if  forloop.counter <= 5 %}
+                      <font size="2px" color="black"><strong> {{one.2}} </strong><font>&nbsp;{{one.3}} <br>
+                    {% endif %}
+                   {% endfor %}
+                   <label id="view" name="view" class="collapsible" style="color:#5D6D7E;">View All Comments</label>
+                   <div class="comment_data">
+                        {% for one in  data.6 %}
+                        {% if forloop.counter > 5 %}
+                          <font size="2px" color="black"><strong> {{one.2}} </strong><font>&nbsp;{{one.3}} <br>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+               {% else %}
+                   {% for one in  data.6 %}
+                       <font size="2px" color="black"><strong> {{one.2}} </strong><font>&nbsp;{{one.3}} <br>
+                    {% endfor %}
+                {% endif %}
+
+            {% endif %}
+
+        <form method="post"  action="/doComment" style="width:100%;">
+            {% csrf_token %}
+        <input type="hidden" value="{{ data.4 }}" name="postid">
+        <input type="hidden" name="userid" value="{{allusers.email}}">
+        <input type="hidden" value="timeline" name="page">
+        <input class="form-control form-control-sm" name ="commentText"  id="commentText" type="text" placeholder="Add a comment.." onkeypress="javascript:if (event.which || event.keyCode){if ((event.which == 13) ) {this.form.submit();}};">
+        </form>
+
+        </div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="card boder shadow-lg p-3 mb-2 bg-white"  style="margin-bottom:10px">
+        <div class="card-header ">No post Found!
+        </div>
+      </div>
+      {% endif %}
+
+          </div>
+          <!-- footer-->
+          <footer class="bg-secondary py-5">
+              <div class="container"><div class="text-center " style="color:white;"> Created by Subhasree Vadukoot</div></div>
+          </footer>
+
+    <script type="text/javascript">
+// for viewing and hiding comments
+          var coll = document.getElementsByClassName("collapsible");
+          var butoon = document.getElementById("view");
+          var i;
+
+        for (i = 0; i < coll.length; i++) {
+          coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.maxHeight){
+              content.style.maxHeight = null;
+              butoon.value = "View All Comments"
+              butoon.innerHTML = "View All Comments"
+            } else {
+              content.style.maxHeight = content.scrollHeight + "px";
+              butoon.value = "Hide Comments"
+              butoon.innerHTML = "Hide Comments"
+            }
+          });
+        }
+
+       </script>
+
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+    
+
+ </body>
+
+ </html>

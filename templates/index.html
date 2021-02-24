@@ -1,0 +1,621 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1,shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="Subhasree" content="" />
+        <title>Climate Conversation</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <link rel="icon" type="image/x-icon" href="{% static 'images/img/favicon.ico' %}" />
+        <script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    </head>
+        <style>
+        a:active{
+        color: #218C8B;
+        }
+        .dataframe {
+        width: 100%;
+        text-align: left;
+        border-collapse: collapse;
+        }
+        .dataframe th {
+        background-color: goldenrod;
+        color: white;
+        }
+        .dataframe td,
+        .dataframe th {
+        padding: 10px;
+        border: 1px solid goldenrod;
+        }
+
+        hr.rounded {
+          border-top: 8px solid #bbb;
+          border-radius: 5px;
+        }
+        hr.solid {
+        border-top: 3px solid #bbb;
+      }
+    </style>
+    <body id="page-top">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom" >
+        <a class="navbar-brand" href="/" style="letter-spacing:5px;">Climate Conversations and Visualizations</a>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto my-2 my-lg-0">
+              <li class="nav-item"><a class="nav-link" href="#algorithms">Algorithms</a></li>
+              <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#climatep2">Dashboard</a></li>
+              <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#sentiments">Climate Sentiments</a></li>
+              <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#weather">Weather</a></li>
+
+              {% if allusers %}
+                  <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/post?userid={{allusers.email}}">Post</a></li>
+                  <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/timeline?userid={{allusers.email}}">Timeline</a></li>
+              {% else %}
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/login">Login</a></li>
+              {% endif %}
+            </ul>
+        </div>
+      </nav>
+
+        <header class="index1" style="background-image:linear-gradient(to bottom, rgba(92, 77, 66, 0.8) 0%, rgba(92, 77, 66, 0.8) 100%),url('static/images/img/bg1.jpg');">
+            <div class="container h-100">
+                <div class="row h-100 align-items-center justify-content-center text-center">
+                    <div class="col-lg-10 align-self-end">
+                        <h1 class="text-uppercase text-white ">Know what the world feels about the climate crisis</h1>
+                        <hr class="divider my-4" />
+                    </div>
+                    <div class="col-lg-8 align-self-baseline">
+                        <p class="text-white-75 font-weight-light mb-5">
+                          Custom sentiment analysis, Tableau powered dashboards, timelines and more!
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="page-section" id="services">
+            <div class="container">
+                <h2 class="text-center mt-0">Climate Crisis</h2>
+                <hr class="divider my-4" />
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                            <i class="text-primary mb-4"></i>
+                             <img src="{% static 'images/img/theme4.png' %}" width="100px" height="100px"  ></img>
+                            <h3 class="h4 mb-2">Global Warming</h3>
+                            <p class="text-muted mb-0">Since the late 19th century , the average surface temperature of the earth has increased around 1.62 degrees Fahrenheit</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                            <i class="text-primary mb-4"></i>
+                             <img src="{% static 'images/img/theme2.png' %}" width="100px" height="100px"  ></img>
+                            <h3 class="h4 mb-2">Deforestation</h3>
+                            <p class="text-muted mb-0">Deforestation is a significant source of climate change. We have lost no less than 13 million hectares over the last 10 years</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                            <i class=" text-primary mb-4"></i>
+                            <img src="{% static 'images/img/theme3.png' %}" width="100px" height="100px"  ></img>
+                            <h3 class="h4 mb-2">Extreme climate events</h3>
+                            <p class="text-muted mb-0">Floods, drought, landslides, earthquake and forest fires are becoming the new normal</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                          <i class=" text-primary mb-4"></i>
+                          <img src="{% static 'images/img/theme1.png' %}" width="100px" height="100px"  ></img>
+                            <h3 class="h4 mb-2">Pollution</h3>
+                            <p class="text-muted mb-0">Estimates by the World Health Organization (WHO) indicate that more than 400,000 premature deaths in Europe are due annually to inadequate air quality.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <hr class="solid">
+        <section class="page-section " id="algorithms">
+            <div class="container">
+              <h2 class="text-center mt-0">Sentimental Analysis Methods</h2>
+              <div class="row">
+                <div class="col-lg-6 col-md-6 text-center">
+                    <div class="mt-5">
+                        <i class="text-primary mb-4"></i>
+                        <h3 class="h4 mb-2">Naive Bayes Classifier</h3>
+                        <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Sentiment</th>
+      <th>precision</th>
+      <th>recall</th>
+      <th>F1-score</th>
+      <th>Support</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td>Denial</td>
+      <td>0.6970</td>
+      <td>0.7718</td>
+      <td>0.7325</td>
+      <td>298</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>Neutral</td>
+      <td>0.7136</td>
+      <td>0.4810</td>
+      <td>0.5747</td>
+      <td>316</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>Belief</td>
+      <td>0.7299</td>
+      <td>0.7828</td>
+      <td>0.7554</td>
+      <td>290</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>Factual News</td>
+      <td>0.7486</td>
+      <td>0.8750</td>
+      <td>0.8069</td>
+      <td>296</td>
+    </tr>
+    <tr>
+      <th>Accuracy</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>0.7233</td>
+      <td>1200</td>
+    </tr>
+    <tr>
+      <th>Macro avg</th>
+      <td></td>
+      <td>0.7233</td>
+      <td>0.7276</td>
+      <td>0.7174</td>
+      <td>1200</td>
+    </tr>
+    <tr>
+      <th>Weighted avg</th>
+      <td></td>
+      <td>0.7220</td>
+      <td>0.7233</td>
+      <td>0.7148</td>
+      <td>1200</td>
+    </tr>
+  </tbody>
+</table>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 text-center">
+                    <div class="mt-5">
+                        <i class="text-primary mb-4"></i>
+                        <h3 class="h4 mb-2">Support Vector Classifier</h3>
+                        <table border="1" class="dataframe">
+                          <thead>
+                            <tr style="text-align: right;">
+                              <th></th>
+                              <th>Sentiment</th>
+                              <th>precision</th>
+                              <th>recall</th>
+                              <th>f1-score</th>
+                              <th>support</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td></td>
+                              <td>Denial</td>
+                              <td>0.7379</td>
+                              <td>0.7181</td>
+                              <td>0.7279</td>
+                              <td>298</td>
+                            </tr>
+                            <tr>
+                              <td></td>
+                              <td>Neutral</td>
+                              <td>0.6920</td>
+                              <td>0.5759</td>
+                              <td>0.6287</td>
+                              <td>316</td>
+                            </tr>
+                            <tr>
+                              <td></td>
+                              <td>Belief</td>
+                              <td>0.8077</td>
+                              <td>0.7966</td>
+                              <td>0.8021</td>
+                              <td>290</td>
+                            </tr>
+                            <tr>
+                              <td></td>
+                              <td>Factual News</td>
+                              <td>0.7618</td>
+                              <td>0.9291</td>
+                              <td>0.8371</td>
+                              <td>296</td>
+                            </tr>
+                            <tr>
+                              <th>Accuracy</th>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>0.7517</td>
+                              <td>1200</td>
+                            </tr>
+                            <tr>
+                              <th>Macro avg</th>
+                              <td></td>
+                              <td>0.7499</td>
+                              <td>0.7549</td>
+                              <td>0.7489</td>
+                              <td>1200</td>
+                            </tr>
+                            <tr>
+                              <th>Weighted avg</th>
+                              <td></td>
+                              <td>0.7486</td>
+                              <td>0.7517</td>
+                              <td>0.7466</td>
+                              <td>1200</td>
+                            </tr>
+                          </tbody>
+</table>
+                    </div>
+                </div>
+              </div>
+              <div class="row" >
+                <div class="col-lg-6 col-md-6 text-center" >
+                  <div class="mt-5">
+                      <i class="text-primary mb-4"></i>
+                      <h3 class="h4 mb-2">LogisticRegression Classifier</h3>
+                      <table border="1" class="dataframe">
+                        <thead>
+                          <tr style="text-align: right;">
+                            <th></th>
+                            <th>Sentiment</th>
+                            <th>precision</th>
+                            <th>recall</th>
+                            <th>f1-score</th>
+                            <th>support</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td></td>
+                            <td>Denial</td>
+                            <td>0.7367</td>
+                            <td>0.6946</td>
+                            <td>0.7150</td>
+                            <td>298</td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td>Neutral</td>
+                            <td>0.6800</td>
+                            <td>0.5918</td>
+                            <td>0.6328</td>
+                            <td>316</td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td>Belief</td>
+                            <td>0.7979</td>
+                            <td>0.8034</td>
+                            <td>0.8007</td>
+                            <td>290</td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td>Factual News</td>
+                            <td>0.7585</td>
+                            <td>0.9020</td>
+                            <td>0.8241</td>
+                            <td>296</td>
+                          </tr>
+                          <tr>
+                            <th>Accuracy</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>0.7450</td>
+                            <td>1200</td>
+                          </tr>
+                          <tr>
+                            <th>Macro avg</th>
+                            <td></td>
+                            <td>0.7433</td>
+                            <td>0.7480</td>
+                            <td>0.7432</td>
+                            <td>1200</td>
+                          </tr>
+                          <tr>
+                            <th>Weighted avg</th>
+                            <td></td>
+                            <td>0.7419</td>
+                            <td>0.7450</td>
+                            <td>0.7410</td>
+                            <td>1200</td>
+                          </tr>
+                        </tbody>
+</table>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-6 text-center">
+                  <div class="mt-5">
+                      <i class="text-primary mb-4"></i>
+                      <h3 class="h4 mb-2">Bagging with LinearSVC</h3>
+                      <table border="1" class="dataframe">
+                        <thead>
+                          <tr style="text-align: right;">
+                            <th></th>
+                            <th>Sentiment</th>
+                            <th>precision</th>
+                            <th>recall</th>
+                            <th>f1-score</th>
+                            <th>support</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td></td>
+                            <td>Denial</td>
+                            <td>0.6968</td>
+                            <td>0.6108</td>
+                            <td>0.6509</td>
+                            <td>316</td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td>Neutral</td>
+                            <td>0.8055</td>
+                            <td>0.8138</td>
+                            <td>0.8096</td>
+                            <td>390</td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td>Belief</td>
+                            <td>0.7947</td>
+                            <td>0.9155</td>
+                            <td>0.8509</td>
+                            <td>296</td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td>Factual News</td>
+                            <td>0.7247</td>
+                            <td>0.8654</td>
+                            <td>0.7888</td>
+                            <td>587</td>
+                          </tr>
+                          <tr>
+                            <th>Accuracy</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>0.7600</td>
+                            <td>1200</td>
+                          </tr>
+                          <tr>
+                            <th>Macro avg</th>
+                            <td></td>
+                            <td>0.7576</td>
+                            <td>0.7629</td>
+                            <td>0.7584</td>
+                            <td>1200</td>
+                          </tr>
+                          <tr>
+                            <th>Weighted avg</th>
+                            <td></td>
+                            <td>0.7563</td>
+                            <td>0.7600</td>
+                            <td>0.7563</td>
+                            <td>1200</td>
+                          </tr>
+                        </tbody>
+</table>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6 col-md-6 text-center">
+                  <div class="mt-5">
+                      <i class="text-primary mb-4"></i>
+                      <h3 class="h4 mb-2">AdaBoost with MultinomialNB</h3>
+                      <table border="1" class="dataframe">
+                        <thead>
+                          <tr style="text-align: right;">
+                            <th></th>
+                            <th>Sentiment</th>
+                            <th>precision</th>
+                            <th>recall</th>
+                            <th>f1-score</th>
+                            <th>support</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td></td>
+                            <td>Denial</td>
+                            <td>0.6820</td>
+                            <td>0.5973</td>
+                            <td>0.6369</td>
+                            <td>298</td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td>Neutral</td>
+                            <td>0.5347</td>
+                            <td>0.4146</td>
+                            <td>0.4670</td>
+                            <td>316</td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td>Belief</td>
+                            <td>0.6023</td>
+                            <td>0.7310</td>
+                            <td>0.6604</td>
+                            <td>290</td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td>Factual News</td>
+                            <td>0.6667</td>
+                            <td>0.7703</td>
+                            <td>0.7147</td>
+                            <td>296</td>
+                          </tr>
+                          <tr>
+                            <th>Accuracy</th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>0.6242</td>
+                            <td>1200</td>
+                          </tr>
+                          <tr>
+                            <th>Macro avg</th>
+                            <td></td>
+                            <td>0.6214</td>
+                            <td>0.6283</td>
+                            <td>0.6198</td>
+                            <td>1200</td>
+                          </tr>
+                          <tr>
+                            <th>Weighted avg</th>
+                            <td></td>
+                            <td>0.6202</td>
+                            <td>0.6242</td>
+                            <td>0.6170</td>
+                            <td>1200</td>
+                          </tr>
+                        </tbody>
+</table>
+                  </div>
+                </div>
+
+</table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        </section>
+        <!-- -->
+
+<hr class="solid">
+<!-- Tableau dashboards-->
+
+        <div id="climatep2">
+            <div class="container-fluid p-0">
+              <div class='tableauPlaceholder' id='viz1599164340153' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Gl&#47;Globalecologicalfootprint_15991643243890&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Globalecologicalfootprint_15991643243890&#47;Dashboard1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Gl&#47;Globalecologicalfootprint_15991643243890&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1599164340153');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1366px';vizElement.style.height='795px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='1366px';vizElement.style.height='795px';} else { vizElement.style.width='100%';vizElement.style.height='1277px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+            </div>
+        </div>
+
+<hr class="solid">
+<div id="climatep">
+    <div class="container-fluid p-0">
+        <div class='tableauPlaceholder' id='viz1599163944693' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Pe&#47;Percapitaco2emissions&#47;Sheet1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='Percapitaco2emissions&#47;Sheet1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Pe&#47;Percapitaco2emissions&#47;Sheet1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1599163944693');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+    </div>
+</div>
+
+        <section class="page-section bg-secondary text-white" id="sentiments">
+            <div class="container text-center">
+                <h2 class="mb-4">Find out what the world's sentiments are!</h2>
+                <a class="btn btn-info btn-xl" href="/sentiment?userid={{allusers.email}}">Analyse sentiments</a>
+            </div>
+        </section>
+        <!-- weather-->
+        <section class="page-section" id="weather">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 text-center">
+                        <h2 class="mt-0">Today's Weather</h2>
+                        <hr class="divider my-4" />
+                        <p class="text-muted mb-5">{{weather.request.query}}
+                            {{weather.location.localtime}}
+                            <br>
+                            {{weather.current.weather_descriptions.0}}</p>
+                    </div>
+                </div>
+                <div class="row" style="color:#21618C ;">
+                  <div class="col-lg-4 ml-auto text-center mb-5 mb-lg-0">
+                      <i class="  mb-3 text-muted"></i>
+                      <img src="{% static 'images/img/temp.png' %}" width="100px" height="100px"></img>
+                      <div>
+                          {{weather.current.temperature}}<br>
+                          Temperature
+                      </div>
+                  </div>
+                    <div class="col-lg-4 ml-auto text-center mb-5 mb-lg-0">
+                        <i class="  mb-3 text-muted"></i>
+                        <img src="{% static 'images/img/humidity.png' %}" width="100px" height="100px"></img>
+                        <div>
+                            {{weather.current.humidity}}<br>
+                            Humidity
+                        </div>
+                    </div>
+                            <div class="col-lg-4 ml-auto text-center mb-5 mb-lg-0">
+                            <i class="  mb-3 text-muted"></i>
+                            <img src="{% static 'images/img/windspeed.png' %}" width="100px" height="100px"></img>
+                            <div>
+                                {{weather.current.wind_speed}}<br>
+                                Wind Speed
+                            </div>
+                        </div>
+                        <div class="col-lg-4 ml-auto text-center mb-5 mb-lg-0">
+                            <i class="mb-3 text-muted"></i>
+                            <img src="{% static 'images/img/winddirection.png' %}" width="100px" height="100px"></img>
+                            <div>
+                                {{weather.current.wind_dir}}<br>
+                                Wind direction
+                            </div>
+                        </div>
+                        <div class="col-lg-4 ml-auto text-center mb-5 mb-lg-0">
+                        <i class="mb-3 text-muted"></i>
+                        <img src="{% static 'images/img/precip.png' %}" width="100px" height="100px"></img>
+                        <div>
+                            {{weather.current.precip}}<br>
+                            Precipitation
+                        </div>
+                      </div>
+                        <div class="col-lg-4 ml-auto text-center mb-5 mb-lg-0">
+                        <i class="  mb-3 text-muted"></i>
+                        <img src="{% static 'images/img/pressure.png' %}" width="100px" height="100px"></img>
+                        <div>
+                            {{weather.current.pressure}}<br>
+                            Pressure
+                        </div>
+                      </div>
+
+                </div>
+
+        </section>
+        <!-- footer of home page-->
+        <footer class="bg-secondary py-5">
+            <div class="container"><div class="text-center" style="color:white;"> Created by Subhasree Vadukoot</div></div>
+        </footer>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+        <!--<script src="{% static 'js/scripts.js' %}"></script>-->
+        </body>
+</html>

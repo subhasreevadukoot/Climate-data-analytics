@@ -1,0 +1,382 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Climate Conversations</title>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="icon" type="image/x-icon" href="{% static 'images/img/favicon.ico' %}" />
+<script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+
+<style>
+
+
+.main {
+  padding: 0px 10px;
+  margin-top: 80px;
+}
+
+
+
+
+.box{
+  box-model: border-box;
+  border: 3px solid transparent;
+  background-clip:padding-box;
+}
+
+.widgets {
+    display: flex;
+    justify-content: space-around;
+}
+
+.nogap > .col{ padding-left:7.5px; padding-right: 7.5px}
+.nogap > .col:first-child{ padding-left: 15px; }
+.nogap > .col:last-child{ padding-right: 15px; }
+
+.cssBox {
+  flex-basis: calc(50% - 20px);
+}
+
+.rcorners1 {
+  border-radius: 25px;
+  background: #73AD21;
+  padding: 20px;
+  width: 200px;
+  height: 150px;
+}
+.circle {
+  position: relative;
+  width: 100%;
+  height: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid gray;
+}
+
+.circle img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.follow {
+  background-color:#D98880; /* Green */
+  border: none;
+  color:white  ;
+  padding:10px;
+  font-size: 16px;
+  cursor: pointer;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+}
+
+.topic-head {
+  color:#2471A3 ;
+}
+.content-font {
+  font-size:15px;
+}
+
+.follow:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.comment_data {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #f1f1f1;
+}
+#chartdiv1 {
+  width: 100%;
+  height: 500px;
+}
+
+#post_div {
+  font-family: Tahoma,Verdana ;
+  font-size: 85%;
+}
+
+.myTable {
+width: 100%;
+text-align: left;
+border-collapse: collapse;
+}
+.myTable th {
+background-color: goldenrod;
+color: white;
+}
+.myTable td,
+.myTable th {
+padding: 10px;
+border: 1px solid goldenrod;
+}
+
+</style>
+
+<script>
+window.onload = function () {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true,
+	theme: "light2",
+	title:{
+		text: "Twitter Sentiment"
+	},
+	data: [{
+		type: "pie",
+		indexLabelPlacement: "inside",
+		indexLabelFontColor: "white",
+		toolTipContent: "<b>{label}</b>: {y} <b>({percentage}%)</b>",
+		indexLabel: "{label} ({percentage}%)",
+		dataPoints: {{result|safe}}
+	}]
+});
+calculatePercentage();
+chart.render();
+
+function calculatePercentage() {
+	var dataPoint = chart.options.data[0].dataPoints;
+	var total = 100;
+	for(var i = 0; i < dataPoint.length; i++) {
+
+			chart.options.data[0].dataPoints[i].percentage = ( (dataPoint[i].y/total)*100 ).toFixed(2);
+
+	}
+}
+
+var chartType = document.getElementById('senti_graph_type');
+chartType.addEventListener( "change",  function(){
+  chart.options.data[0].type = chartType.options[chartType.selectedIndex].value;
+  chart.render();
+});
+
+}
+</script>
+
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/plugins/wordCloud.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/material.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-alpha1/html2canvas.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.svg.js" integrity="sha512-2ozzXGLAvGlXy+bAjqirhgraJB/Y6KD0iTeSKTu2Ko7re3W6p2/pJmO0mQ3JOrwcfgwstq0odMG1Q17ho0T1sg==" crossorigin="anonymous"></script>
+
+
+
+
+
+
+<!-- Chart code -->
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_material);
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var chart = am4core.create("", am4plugins_wordCloud.WordCloud);
+var series = chart.series.push(new am4plugins_wordCloud.WordCloudSeries());
+
+series.colors = new am4core.ColorSet();
+series.colors.passOptions = {};
+
+
+series.accuracy = 4;
+series.step = 15;
+series.rotationThreshold = 0.7;
+series.maxCount = 200;
+series.minWordLength = 2;
+series.labels.template.tooltipText = "{word}: {value}";
+series.fontFamily = "Courier New";
+series.maxFontSize = am4core.percent(40);
+
+series.text ="{{word_data|safe}}"
+
+}); // end am4core.ready()
+</script>
+
+
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom" >
+    <a class="navbar-brand" href="/" style="  letter-spacing:5px;">Climate Conversations and Visualizations</a>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto my-2 my-lg-0">
+          <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/home?userid={{allusers.email}}">Home</a></li>
+          <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/post?userid={{allusers.email}}">Post</a></li>
+          <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/timeline?userid={{allusers.email}}">Timeline</a></li>
+          <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/logout">Logout</a></li>
+        </ul>
+    </div>
+  </nav>
+
+<div class="main" id="main_div">
+
+      <div class="col-sm-12 " >
+        <div class="row" style="padding-left:10px;padding-right:10px;">
+          <div class="card boder shadow-lg p-3 mb-2 bg-white form-group"  style="width:100%;">
+            <form method="get"  action="/climatedata" style="width:100%;">
+              <input type="hidden" name="userid" value="{{allusers.email}}">
+              <div class="row">
+
+                  {% csrf_token %}
+              <div class="col-sm-6 " >
+              <input class="form-control" type = "text" id="content" name="content" placeholder="What's on your mind?" style="width:100%;height:100%;" required />
+              </div>
+              <div class="col-sm-2 " >
+              <input  type="submit"   value="Find" name="button"  class="btn btn-info btn-sm" style="width:100px;height:40px" />
+              </div>
+
+
+
+            </div>  </form>
+
+           </div>
+          </div>
+
+          <div class="row" id="chartPanel" style="padding-left:10px;padding-right:10px;">
+            <div class="card boder shadow-lg p-3 mb-2 bg-white form-group"  style="width:100%;">
+              <div class="row">
+              <div class="col-sm-9 " >
+              <input class="form-control" type = "text" id="caption" name="caption" placeholder="Caption" style="width:100%;" required />
+              <textarea class="form-control" id="desc" name="desc" placeholder="What's your thought ?" style="width:100%;padding:10px;margin-top:10px" required></textarea>
+              </div>
+              <div class="col-sm-3 " >
+              <select class="form-control" name="senti_graph_type" id="senti_graph_type" style="width:100%"  >
+                  <option value="" selected disabled hidden>select Graph</option>
+                        <option value="funnel">Funnel</option>
+                        <option value="pie">Pie</option> doughnut
+                        <option value="pyramid">Pyramid</option>
+                        <option value="doughnut">Doughnut</option>
+              </select>
+                      {% csrf_token %}
+                 <input type="hidden" name="image_data" value="">
+                 <img src="" id="post_file"  name="post_file">
+                 <input type="hidden" name="userid" value="{{allusers.email}}">
+                 <input   type="submit"   id = "post" value="POST" name="button"  class="form-control btn-info " style="width:100px;" />
+
+              </div>
+              </div>
+              <div   id="post_div" >
+              <div class="row"  id="chartPost" style="height:400px">
+                    <div class="col-sm-4" id="chartContainer"></div>
+                    <!-- <div class="col-sm-4" id="chartpie"></div> -->
+                    <!-- <div class="col-sm-8" id="chartWorld" > </div> -->
+                    <div class="col-sm-8"  id="tweettable" >
+                        {% if tweets %}
+                      <table >
+                      <tr>
+                        <th>Tweets for  :{{word}}</th>
+                          <th></th>
+                            <th></th>
+                      </tr>
+                         {% for tweet in  tweets %}
+                          <tr>
+
+                                <td>{{tweet.0}}</td>
+                                <td>{{tweet.1}} </td>
+
+                           </tr>
+                        {% endfor %}
+                        </table>
+                        {% else %}
+                        <div class="card boder shadow-lg p-3 mb-2 bg-white"  style="margin-bottom:10px">
+                          <div class="card-header ">No Tweets Found for #{{word}}
+                          </div>
+                        </div>
+                      {%endif%}
+                      </div>
+              </div>
+
+              </div>
+
+             </div>
+            </div>
+
+
+          </div>
+    </div>
+    <!-- footer-->
+    <footer class="bg-secondary py-5">
+        <div class="container"><div class="text-center" style="color:white;"> Created by Subhasree Vadukoot</div></div>
+    </footer>
+
+
+  <script type="text/javascript">
+      $(function() {
+                  $("#post").click(function() {
+
+                    var contents = document.querySelector("#chartContainer");
+                    var result = contents.innerHTML.trim();
+                    result == "" ? console.log(true) : console.log(false);
+
+                    if(result != ""){
+                    html2canvas(document.querySelector("#post_div")).then(function(canvas) {
+                    theCanvas = canvas;
+
+                var form = document.createElement("form");
+                form.setAttribute("method", "post");
+                form.setAttribute("action", '/postdata');
+                form.setAttribute("enctype", "multipart/form-data");
+                var logo = document.createElement("input");
+                logo.setAttribute("type", "hidden");
+                logo.setAttribute("name", "post_file");
+                logo.setAttribute("value", canvas.toDataURL("image/png") );
+                form.appendChild(logo);
+
+                var hiddenField4 = document.createElement("input");
+                hiddenField4.setAttribute("type", "hidden");
+                hiddenField4.setAttribute("name", "csrfmiddlewaretoken");
+                hiddenField4.setAttribute("value", "{{csrf_token}}" );
+                form.appendChild(hiddenField4);
+
+
+                var hiddenField5 = document.createElement("input");
+                hiddenField5.setAttribute("type", "hidden");
+                hiddenField5.setAttribute("name", "userid");
+                hiddenField5.setAttribute("value", "{{allusers.email}}" );
+                form.appendChild(hiddenField5);
+
+                var caption = document.createElement("input");
+                caption.setAttribute("type", "hidden");
+                caption.setAttribute("name", "caption");
+                caption.setAttribute("value", document.getElementById('caption').value );
+                form.appendChild(caption);
+
+                var content = document.createElement("input");
+                content.setAttribute("type", "hidden");
+                content.setAttribute("name", "desc");
+                content.setAttribute("value", document.getElementById('desc').value );
+                form.appendChild(content);
+
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+     );
+   }else{
+     alert("Please provide sentiment word details before posting!");
+     return false;
+   }
+    });
+ });
+ </script>
+ </body>
+ </html>

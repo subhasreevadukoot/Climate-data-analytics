@@ -1,0 +1,594 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Climate Conversations</title>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="icon" type="image/x-icon" href="{% static 'images/img/favicon.ico' %}" />
+
+<script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js" crossorigin="anonymous"></script>
+
+<link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" rel="stylesheet" />
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+
+<style>
+
+
+
+.main {
+  padding: 0px 10px;
+  margin-top: 100px;
+}
+
+
+
+.box{
+  box-model: border-box;
+  border: 3px solid transparent;
+  background-clip:padding-box;
+}
+
+.widgets {
+    display: flex;
+    justify-content: space-around;
+}
+
+.nogap > .col{ padding-left:7.5px; padding-right: 7.5px}
+.nogap > .col:first-child{ padding-left: 15px; }
+.nogap > .col:last-child{ padding-right: 15px; }
+
+.cssBox {
+  flex-basis: calc(50% - 20px);
+}
+
+.rcorners1 {
+  border-radius: 25px;
+  background: #73AD21;
+  padding: 20px;
+  width: 200px;
+  height: 150px;
+}
+
+
+.circle {
+  position: relative;
+  width: 100%;
+  height: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid gray;
+}
+
+.circle img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.follow {
+  background-color:#D98880; /* Green */
+  border: none;
+  color:white  ;
+  padding:10px;
+  font-size: 16px;
+  cursor: pointer;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+}
+
+.topic-head {
+  color:#2471A3 ;
+}
+.content-font {
+  font-size:15px;
+}
+
+.follow:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.comment_data {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #f1f1f1;
+}
+#chartdiv1 {
+  width: 100%;
+  height: 500px;
+}
+</style>
+<script>
+window.onload = function () {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true,
+	theme: "light2",
+	title:{
+		text: "Twitter Sentiment"
+	},
+	data: [{
+		type: "funnel",
+		indexLabelPlacement: "inside",
+		indexLabelFontColor: "white",
+		toolTipContent: "<b>{label}</b>: {y} <b>({percentage}%)</b>",
+		indexLabel: "{label} ({percentage}%)",
+		dataPoints: {{result|safe}}
+	}]
+});
+calculatePercentage();
+chart.render();
+
+function calculatePercentage() {
+	var dataPoint = chart.options.data[0].dataPoints;
+	var total = 100;
+	for(var i = 0; i < dataPoint.length; i++) {
+			chart.options.data[0].dataPoints[i].percentage = ( (dataPoint[i].y/total)*100 ).toFixed(2);
+	}
+}
+
+}
+</script>
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/plugins/wordCloud.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/material.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_material);
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var chart = am4core.create("chartdiv", am4plugins_wordCloud.WordCloud);
+var series = chart.series.push(new am4plugins_wordCloud.WordCloudSeries());
+
+series.colors = new am4core.ColorSet();
+series.colors.passOptions = {};
+
+
+series.accuracy = 4;
+series.step = 15;
+series.rotationThreshold = 0.7;
+series.maxCount = 200;
+series.minWordLength = 2;
+series.labels.template.tooltipText = "{word}: {value}";
+series.fontFamily = "Courier New";
+series.maxFontSize = am4core.percent(40);
+
+series.text ="{{word_cloud|safe}}"
+
+});
+</script>
+
+
+<script src="https://cdn.amcharts.com/lib/4/maps.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/geodata/worldHigh.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_material);
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var chart = am4core.create("chartFossilWorld", am4plugins_wordCloud.WordCloud);
+var series = chart.series.push(new am4plugins_wordCloud.WordCloudSeries());
+
+series.colors = new am4core.ColorSet();
+series.colors.passOptions = {};
+
+
+series.accuracy = 4;
+series.step = 15;
+series.rotationThreshold = 0.7;
+series.maxCount = 200;
+series.minWordLength = 2;
+series.labels.template.tooltipText = "{word}: {value}";
+series.fontFamily = "Courier New";
+series.maxFontSize = am4core.percent(40);
+
+series.text ="{{world_fossil|safe}}"
+
+}); // end am4core.ready()
+</script>
+
+
+<!-- section 2-->
+
+
+<!-- section 2 top 10 polluters-->
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+
+
+var toppolluters = am4core.create("chartContainer1", am4charts.XYChart);
+toppolluters.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+toppolluters.paddingRight = 0;
+
+toppolluters.data = {{result_fossil|safe}}
+
+var categoryAxis = toppolluters.yAxes.push(new am4charts.CategoryAxis());
+categoryAxis.dataFields.category = "label";
+categoryAxis.renderer.grid.template.strokeOpacity = 0;
+categoryAxis.renderer.minGridDistance = 10;
+categoryAxis.renderer.labels.template.dx = -40;
+categoryAxis.renderer.minWidth = 120;
+categoryAxis.renderer.tooltip.dx = -40;
+categoryAxis.renderer.labels.template.horizontalCenter = "right";
+categoryAxis.renderer.labels.template.verticalCenter = "middle";
+categoryAxis.renderer.labels.template.fontSize = 13;
+
+var valueAxis = toppolluters.xAxes.push(new am4charts.ValueAxis());
+valueAxis.renderer.inside = true;
+valueAxis.renderer.labels.template.fillOpacity = 0.3;
+valueAxis.renderer.grid.template.strokeOpacity = 0;
+valueAxis.min = 0;
+valueAxis.cursorTooltipEnabled = false;
+valueAxis.renderer.baseGrid.strokeOpacity = 0;
+valueAxis.renderer.labels.template.dy = 20;
+
+var series = toppolluters.series.push(new am4charts.ColumnSeries);
+series.dataFields.valueX = "y";
+series.dataFields.categoryY = "label";
+series.tooltipText = "{valueX.value}";
+series.tooltip.pointerOrientation = "vertical";
+series.tooltip.dy = - 30;
+series.columnsContainer.zIndex = 100;
+
+var columnTemplate = series.columns.template;
+columnTemplate.height = am4core.percent(50);
+columnTemplate.maxHeight = 50;
+columnTemplate.column.cornerRadius(60, 10, 60, 10);
+columnTemplate.strokeOpacity = 0;
+
+series.heatRules.push({ target: columnTemplate, property: "fill", dataField: "valueX", min: am4core.color("#e5dc36"), max: am4core.color("#5faa46") });
+series.mainContainer.mask = undefined;
+
+var cursor = new am4charts.XYCursor();
+toppolluters.cursor = cursor;
+cursor.lineX.disabled = true;
+cursor.lineY.disabled = true;
+cursor.behavior = "none";
+
+var bullet = columnTemplate.createChild(am4charts.CircleBullet);
+toppolluters.circle.radius = 30;
+bullet.valign = "middle";
+bullet.align = "left";
+bullet.isMeasured = true;
+bullet.interactionsEnabled = false;
+bullet.horizontalCenter = "right";
+bullet.interactionsEnabled = false;
+
+var hoverState = bullet.states.create("hover");
+var outlineCircle = bullet.createChild(am4core.Circle);
+outlineCircle.adapter.add("radius", function (radius, target) {
+    var circleBullet = target.parent;
+    return circleBullet.circle.pixelRadius + 10;
+})
+
+var image = bullet.createChild(am4core.Image);
+image.width = 60;
+image.height = 60;
+image.horizontalCenter = "middle";
+image.verticalCenter = "middle";
+image.propertyFields.href = "href";
+
+image.adapter.add("mask", function (mask, target) {
+    var circleBullet = target.parent;
+    return circleBullet.circle;
+})
+
+var previousBullet;
+toppolluters.cursor.events.on("cursorpositionchanged", function (event) {
+    var dataItem = series.tooltipDataItem;
+
+    if (dataItem.column) {
+        var bullet = dataItem.column.children.getIndex(1);
+
+        if (previousBullet && previousBullet != bullet) {
+            previousBullet.isHover = false;
+        }
+
+        if (previousBullet != bullet) {
+
+            var hs = bullet.states.getKey("hover");
+            hs.properties.dx = dataItem.column.pixelWidth;
+            bullet.isHover = true;
+
+            previousBullet = bullet;
+        }
+    }
+})
+
+}); // end am4core.ready()
+</script>
+
+
+
+
+
+<!-- section 3-->
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var wordchartsec3 = am4core.create("chartdiv2", am4plugins_wordCloud.WordCloud);
+var series = wordchartsec3.series.push(new am4plugins_wordCloud.WordCloudSeries());
+
+series.accuracy = 4;
+series.step = 15;
+series.rotationThreshold = 0.7;
+series.maxCount = 200;
+series.minWordLength = 2;
+series.labels.template.margin(4,4,4,4);
+series.maxFontSize = am4core.percent(30);
+
+
+
+series.text ="{{world_agri|safe}}"
+series.colors = new am4core.ColorSet();
+series.colors.passOptions = {}; // makes it loop
+
+//series.labelsContainer.rotation = 45;
+series.angles = [0,-90];
+series.fontWeight = "700"
+
+setInterval(function () {
+  series.dataItems.getIndex(Math.round(Math.random() * (series.dataItems.length - 1))).setValue("value", Math.round(Math.random() * 10));
+ }, 10000)
+
+});
+</script>
+
+<!-- Chart code -->
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart
+var chart = am4core.create("chartContainer2", am4charts.PieChart);
+chart.hiddenState.properties.opacity = 0;
+
+
+
+chart.data = {{result_agri|safe}}
+
+var series = chart.series.push(new am4charts.PieSeries());
+series.dataFields.value = "y";
+series.dataFields.radiusValue = "y";
+series.dataFields.category = "label";
+series.slices.template.cornerRadius = 6;
+series.colors.step = 3;
+
+series.hiddenState.properties.endAngle = -90;
+
+// Legends for the chart
+chart.legend = new am4charts.Legend();
+chart.legend.useDefaultMarker = true;
+
+}); // end am4core.ready()
+</script>
+
+
+
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var usagechart = am4core.create("defo_world2", am4charts.SlicedChart);
+usagechart.paddingBottom = 30;
+usagechart.data = [{
+  "name": "Transportation",
+  "value": 28.2
+}, {
+  "name": "Electricity production",
+  "value": 26.9
+}, {
+  "name": "Industry",
+  "value": 22
+}, {
+  "name": "Commercial and residential",
+  "value": 12.3
+},
+{
+ "name": "Land use and forestry",
+ "value": 11.6
+},
+{
+  "name": "Agriculture",
+  "value": 9.9
+},
+];
+
+var series2 = usagechart.series.push(new am4charts.PyramidSeries());
+series2.dataFields.value = "value";
+series2.dataFields.category = "name";
+series2.alignLabels = true;
+series2.valueIs = "height";
+
+});
+</script>
+</head>
+
+<body>
+
+     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom" >
+       <a class="navbar-brand" href="/" style="  letter-spacing:5px;">Climate Conversations and Visualizations</a>
+       <div class="collapse navbar-collapse" id="navbarResponsive">
+           <ul class="navbar-nav ml-auto my-2 my-lg-0">
+        <!--    <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/home?userid={{allusers.email}}">Home</a></li>-->
+             {% if allusers %}
+                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/post?userid={{allusers.email}}">Post</a></li>
+                 <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/timeline?userid={{allusers.email}}">Timeline</a></li>
+                  <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/logout">Logout</a></li>
+             {% else %}
+               <li class="nav-item"><a class="nav-link js-scroll-trigger" href="/login">Login</a></li>
+             {% endif %}
+             </ul>
+       </div>
+     </nav>
+
+<div class="main">
+
+  <div class="row " style="margin-top:10px;" >
+      <div class="col-sm-12 " >
+        <div class="row" style="padding-left:10px;padding-right:10px;">
+          <div class="card boder shadow-lg p-3 mb-2 bg-white"  style="margin-bottom:10px;width:100%;">
+            <h4 class="topic-head">Deforestation</h4><span class="content-font">
+              Trees absorb greenhouse gases ( GHGs), such as carbon dioxide,
+              stopping them from collecting in the environment and increasing the temperature of the planet.
+
+When we clear trees, we not only hammer out our greatest friend in collecting the tremendous volume of GHGs that we humans produce (which we do mainly by burning fossil fuels in power plants and, of course, in vehicles , aircraft and trains).
+When cut down, trees release all the carbon they have stored into the atmosphere. This results in increased greenhouse gases and deforestation accounts for 10 percent of all the emissions in the world [Rainforest Alliance]</span>
+           </div>
+          </div>
+          <div class="card boder shadow-lg p-3 mb-2 bg-white"  style="margin-bottom:10px">
+            <div class="card-header ">
+                <div class="row">
+                    <div class="col-sm-4 " >
+                  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+                    </div>
+                      <div class="col-sm-8 " >
+                        <div id="chartdiv" style="height: 100%; width: 100%;"> </div>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 " >
+                <!-- <div id="defo_world" style="height: 500px; width: 100%;"> </div> -->
+                <div class="col-sm-12"  id="tweettable" >
+                    {% if tweets %}
+                  <table >
+                  <tr>
+                    <th>Tweets for  : Deforestation</th>
+                      <th></th>
+                        <th></th>
+                  </tr>
+                     {% for tweet in  tweets %}
+                      <tr>
+
+                            <td>{{tweet.0}}</td>
+                            <td>{{tweet.1}} </td>
+
+                       </tr>
+                    {% endfor %}
+                    </table>
+                    {% else %}
+                    <div class="card boder shadow-lg p-3 mb-2 bg-white"  style="margin-bottom:10px">
+                      <div class="card-header ">No Tweets Found for #{{word}}
+                      </div>
+                    </div>
+                  {%endif%}
+                  </div>
+                </div>
+                  </div>
+            </div>
+          </div>
+          </div>
+    </div>
+<!-- -->
+    <div class="row " style="margin-top:10px;" >
+        <div class="col-sm-12 " >
+          <div class="row" style="padding-left:10px;padding-right:10px;">
+            <div class="card boder shadow-lg p-3 mb-2 bg-white"  style="margin-bottom:10px;width:100%;">
+              <h4 class="topic-head">Fossil Fuels and Greenhouse gases</h4><span class="content-font">
+                Human actions on Earth are changing the course of the century. The accumulation of ambient carbon dioxide ( CO2) has risen during the past century since fossil fuels such as coal and oil are being produced increasingly. Some of the gases that contribute to the greenhouse effect are Water vapor, Carbon dioxide, Methane,  Nitrous oxide etc.
+              </span>
+             </div>
+            </div>
+            <div class="card boder shadow-lg p-3 mb-2 bg-white"  style="margin-bottom:10px">
+              <div class="card-header ">
+                  <div class="row">
+                      <div class="col-sm-4 " >
+                    <div id="chartContainer1" style="height: 300px; width: 100%;"></div>
+                      </div>
+                        <div class="col-sm-8 " >
+                          <!-- <div id="chartdiv1" style="height: 100%; width: 100%;"> </div> -->
+                            <div id="chartFossilWorld" style="height: 100%; width: 100%;"> </div>
+                    </div>
+
+                  </div>
+
+              </div>
+            </div>
+            </div>
+      </div>
+
+  <!--  -->
+  <div class="row " style="margin-top:10px;" >
+      <div class="col-sm-12 " >
+        <div class="row" style="padding-left:10px;padding-right:10px;">
+          <div class="card boder shadow-lg p-3 mb-2 bg-white"  style="margin-bottom:10px;width:100%;">
+            <h4 class="topic-head">Agriculture</h4><span class="content-font">
+Agriculture leads to climate change both through anthropogenic greenhouse gas pollution and
+ by turning non-agricultural property, such as trees, into agricultural space. In 2010
+  it was projected that livestock, forestry and land use transition would contribute to 20–25% of global annual emissions
+
+</span>
+           </div>
+          </div>
+          <div class="card boder shadow-lg p-3 mb-2 bg-white"  style="margin-bottom:10px">
+            <div class="card-header ">
+                <div class="row">
+                    <div class="col-sm-6 " >
+                  <div id="chartContainer2" style="height:300px; width: 100%;"></div>
+                    </div>
+                      <div class="col-sm-6" >
+                        <div id="chartdiv2" style="height: 100%; width: 100%;"> </div>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 " >
+                <div id="defo_world2" style="height: 500px; width: 100%;"> </div>
+                </div>
+                  </div>
+            </div>
+          </div>
+          </div>
+    </div>
+  </div>
+  <!-- footer-->
+  <footer class="bg-secondary py-5">
+      <div class="container"><div class="text-center" style="color:white;"> Created by Subhasree Vadukoot</div></div>
+  </footer>
+
+  </body>
+
+  </html>
